@@ -5,7 +5,7 @@ import Peer from "simple-peer";
 import videoIcon from "../Assets/video.png";
 import AudioIcon from '../Assets/microphone.png'
 
-const socket = io.connect("http://localhost:5000");
+const socket = io.connect("https://peer-to-peer-backend.onrender.com:5000");
 
 function Home() {
   const [me, setme] = useState("");
