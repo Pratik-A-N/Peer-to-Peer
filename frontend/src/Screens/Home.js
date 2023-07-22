@@ -2,6 +2,8 @@ import React, { useEffect, useRef, useState } from "react";
 // import { CopytoClipboard } from "react-copy-to-clipboard";
 import io from "socket.io-client";
 import Peer from "simple-peer";
+import videoIcon from "../Assets/video.png";
+import AudioIcon from '../Assets/microphone.png'
 
 const socket = io.connect("http://localhost:5000");
 
@@ -24,25 +26,25 @@ function Home() {
   // it will be used when we disconnect from the call
   const connectionRef = useRef();
 
-  const handleVideoToggle =()=>{
+  const handleVideoToggle = () => {
     setVideoEnabled((prev) => !prev);
-  }
+  };
 
-  const handleAudioToggle =()=>{
+  const handleAudioToggle = () => {
     setAudioEnabled((prev) => !prev);
-  }
+  };
 
   useEffect(() => {
     if (stream) {
       stream.getVideoTracks()[0].enabled = videoEnabled;
     }
-  }, [stream,videoEnabled]);
-  
+  }, [stream, videoEnabled]);
+
   useEffect(() => {
     if (stream) {
       stream.getAudioTracks()[0].enabled = audioEnabled;
     }
-  }, [stream,audioEnabled]);
+  }, [stream, audioEnabled]);
 
   useEffect(() => {
     navigator.mediaDevices
@@ -62,9 +64,9 @@ function Home() {
       setcallerSignal(data.signal);
     });
 
-    socket.on('close-remote',()=>{
+    socket.on("close-remote", () => {
       setCallEnded(true);
-    })
+    });
   }, []);
 
   useEffect(() => {
@@ -131,7 +133,7 @@ function Home() {
 
   const leaveCall = () => {
     // setCallEnded(true);
-    socket.emit('close-connection',connectionRef.current)
+    socket.emit("close-connection", connectionRef.current);
   };
 
   useEffect(() => {
@@ -170,6 +172,7 @@ function Home() {
             ) : (
               <div className="flex justify-center m-8 ">
                 {stream && (
+                  
                   <video
                     playsInline
                     muted
@@ -181,9 +184,30 @@ function Home() {
               </div>
             )}
           </div>
-          <div>
-            <button onClick={handleVideoToggle}>Video Toggle</button>
-            <button onClick={handleAudioToggle}>Audio Toggle</button>
+          <div className="flex">
+            <button
+              onClick={handleVideoToggle}
+              className="bg-white p-3 border-2 border-blue-700 rounded-full flex justify-center items-center w-12 h-12 mx-8"
+            >
+              
+              {!videoEnabled ? (<div className="w-1 h-10 bg-black rotate-45"></div>):(null)}
+              <img
+                src={videoIcon}
+                className="w-8 h-8 absolute"
+                alt=""
+                srcSet=""
+              />
+            </button>
+            <button onClick={handleAudioToggle} className="bg-white p-3 border-2 border-blue-700 rounded-full flex justify-center items-center w-12 h-12 mx-8">
+            {!audioEnabled ? (<div className="w-1 h-10 bg-black rotate-45"></div>):(null)}
+
+              <img 
+                src={AudioIcon}
+                className="w-8 h-8 absolute"
+                alt=""
+                srcSet=""
+              />
+            </button>
           </div>
         </div>
         <div className="w-1/4 flex flex-col justify-center items-center  border-l-2 border-blue-500 h-screen">
@@ -211,7 +235,7 @@ function Home() {
                   onChange={(e) => setname(e.target.value)}
                   className="border-2 rounded bg-gray-800 border-green-400 text-white p-3"
                 />
-                
+
                 <div className="flex flex-col items-center">
                   {callAccepted && !callEnded ? (
                     <button
@@ -222,21 +246,21 @@ function Home() {
                     </button>
                   ) : (
                     <>
-                    <label className="block text-white text-xl mt-10">
-                      Enter Your Friend's Caller Id:
-                    </label>
-                    <input
-                      type="text"
-                      value={idToCall}
-                      onChange={(e) => setidToCall(e.target.value)}
-                      className="border-2 rounded bg-gray-800 border-green-400  text-white p-3"
-                    />
-                    <button
-                      className="border-2 border-green-400 m-5 px-8 py-2 rounded-md bg-blue-600 text-white"
-                      onClick={() => callUser(idToCall)}
-                    >
-                      Call
-                    </button>
+                      <label className="block text-white text-xl mt-10">
+                        Enter Your Friend's Caller Id:
+                      </label>
+                      <input
+                        type="text"
+                        value={idToCall}
+                        onChange={(e) => setidToCall(e.target.value)}
+                        className="border-2 rounded bg-gray-800 border-green-400  text-white p-3"
+                      />
+                      <button
+                        className="border-2 border-green-400 m-5 px-8 py-2 rounded-md bg-blue-600 text-white"
+                        onClick={() => callUser(idToCall)}
+                      >
+                        Call
+                      </button>
                     </>
                   )}
                   {/* <p>{idToCall}</p> */}
